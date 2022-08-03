@@ -38,3 +38,7 @@ export function getGoods(): Good[] {
     },
   ]
 }
+
+export function getToken(username: string, password: string) {
+  return Math.floor(Math.pow(36, 16) * Math.random()).toString(36)
+}

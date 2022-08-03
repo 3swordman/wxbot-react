@@ -8,6 +8,9 @@ import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from '@mui/material/FormControlLabel'
 
+import { setUsernamePassword } from "../state/auth"
+import { useAppDispatch } from "../store"
+
 const SignupRoot = styled.div`
   display: flex;
   position: absolute;
@@ -59,8 +62,10 @@ export default function Signup() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   return (
     <SignupRoot>
       <SignupContainer>
@@ -73,9 +78,13 @@ export default function Signup() {
           autoComplete="username" 
           value={username} 
           autoFocus 
+          error={usernameError}
           onChange={ev => {
             setUsername(ev.target.value)
           }} 
+          onBlur={() => {
+            setUsernameError(username == "")
+          }}
         />
         <PasswordList>
           <TextField 
@@ -89,11 +98,7 @@ export default function Signup() {
               setPassword(ev.target.value)
             }} 
             onBlur={ev => {
-              if (password != confirmPassword && confirmPassword != "" || password == "") {
-                setPasswordError(true)
-              } else {
-                setPasswordError(false)
-              }
+              setPasswordError(password != confirmPassword && confirmPassword != "" || password == "")
             }}
             error={passwordError}
           />
@@ -127,13 +132,20 @@ export default function Signup() {
             navigate("/login")
           }}>Sign in instead</NoneTransformButton>
           <RightButton variant="contained" onClick={() => {
-            if (password != confirmPassword || confirmPassword == "" || password == "") {
+            if (password != confirmPassword || confirmPassword == "" || password == "" || username == "") {
               setPasswordError(true)
-            } else {
-              setPasswordError(false)
-              navigate("/verify")
+              return
             }
-
+            if (username == "") {
+              setUsernameError(true)
+              return
+            }
+            setPasswordError(false)
+            dispatch(setUsernamePassword({
+              username,
+              password
+            }))
+            navigate("/verify")
           }}>Next</RightButton>
         </ButtonGroup>
       </SignupContainer>

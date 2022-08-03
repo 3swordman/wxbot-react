@@ -6,6 +6,10 @@ import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import { useNavigate } from "react-router-dom"
 
+import { setUsernameToken } from "../state/auth"
+import { useAppDispatch, useAppSelector, saveData } from "../store"
+import { getToken } from "../network"
+
 const LoginRoot = styled.div`
   display: flex;
   position: absolute;
@@ -61,6 +65,14 @@ export default function () {
   const [passwordError, setPasswordError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState("")
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const authData = useAppSelector(state => state.auth.value)
+  const logined = !!(authData && authData.token)
+  useEffect(() => {
+    if (logined) {
+      navigate(-1)
+    }
+  }, [logined])
   return (
     <LoginRoot>
       <LoginContainer>
@@ -105,8 +117,18 @@ export default function () {
               setPasswordHelperText("This can't be blank")
               allSuccess = false
             }
-            if (allSuccess)
+            if (!allSuccess)
+              return
+            const token = getToken(username, password)
+            dispatch(setUsernameToken({
+              username, token
+            }))
+            ;(async () => {
+              await saveData({
+                username, token
+              })
               navigate("/")
+            })()
           }}>Next</LoginButton>
         </ButtonGroup>
       </LoginContainer>

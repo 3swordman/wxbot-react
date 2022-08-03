@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 
+import { setUsernameToken } from "../state/auth"
+import { useAppDispatch, useAppSelector, saveData } from "../store"
+import { getToken } from "../network"
+
 const VerifyRoot = styled.div`
   display: flex;
   position: absolute;
@@ -26,12 +30,11 @@ const SpaceTypography = styled(Typography)`
 const VerifyContainer = styled.div`
   margin: auto;
   padding: 2em;
-  ${({ theme }) => theme.breakpoints.up("sm")} {
+  ${({ theme }) => theme.breakpoints.up("md")} {
     border: 1px solid #c4c4c4;
     border-radius: 0.25em;
     padding: 3em;
-    padding-right: 15em;
-    max-width: 50%;
+    max-width: 40%;
     max-height: 50%;
   }
   display: flex;
@@ -54,7 +57,12 @@ const RightButton = styled(NoneTransformButton)`
 export default function Verify() {
   const [verifyString, setVerifyString] = useState("")
   const navigate = useNavigate()
+  const authData = useAppSelector(state => state.auth.value)!
+  const dispatch = useAppDispatch()
   useEffect(() => {
+    if (authData == undefined) {
+      navigate("/signup")
+    }
     setVerifyString(Math.floor(Math.pow(36, 8) * Math.random()).toString(36))
   }, [])
   return (
@@ -68,7 +76,18 @@ export default function Verify() {
             navigate("/signup")
           }}>Back</NoneTransformButton>
           <RightButton variant="contained" onClick={() => {
-            navigate("/")
+            const { username, password } = authData
+            const token = getToken(username, password!)
+            dispatch(setUsernameToken({
+              username, 
+              token: getToken(username, password!)
+            }))
+            ;(async () => {
+              await saveData({
+                username, token
+              })
+              navigate("/")
+            })()
           }}>I've already sent</RightButton>
         </ButtonGroup>
       </VerifyContainer>

@@ -157,7 +157,7 @@ export function Good({ good }: { good: GoodType }) {
             </IconButton>
           </CardButtonContainer>
         </CardSecondaryContainer>
-        <SizedImage src={imageSrc}></SizedImage>
+        <SizedImage src={imageSrc} alt={title} />
       </CardContainer>
     </>
   )
