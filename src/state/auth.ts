@@ -4,7 +4,8 @@ interface AuthState {
   value?: {
     username: string,
     token?: string,
-    password?: string
+    password?: string,
+    confirmText?: string
   }
 }
 
@@ -29,19 +30,22 @@ export const authSlice = createSlice({
         state.value.token = token
       }
     },
-    setUsernamePassword(state: AuthState, payload: PayloadAction<{
+    setUsernamePasswordConfirmText(state: AuthState, payload: PayloadAction<{
       username: string,
       password: string,
+      confirmText: string
     }>) {
-      const { username, password } = payload.payload
+      const { username, password, confirmText } = payload.payload
       if (state.value == undefined) {
         state.value = {
           username,
-          password
+          password,
+          confirmText
         }
       } else {
         state.value.username = username
         state.value.password = password
+        state.value.confirmText = confirmText
       }
     },
     logout(state: AuthState) {
@@ -50,6 +54,6 @@ export const authSlice = createSlice({
   }
 })
 
-export const { setUsernameToken, setUsernamePassword, logout } = authSlice.actions
+export const { setUsernameToken, setUsernamePasswordConfirmText, logout } = authSlice.actions
 
 export default authSlice.reducer

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 import { useNavigate } from "react-router-dom"
 
 import { setUsernameToken } from "../state/auth"
@@ -64,6 +66,7 @@ export default function () {
   const [password, setPassword] = useState("")
   const [passwordError, setPasswordError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState("")
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
@@ -119,11 +122,16 @@ export default function () {
             }
             if (!allSuccess)
               return
-            const token = getToken(username, password)
-            dispatch(setUsernameToken({
-              username, token
-            }))
             ;(async () => {
+              const responseData = await getToken(username, password)
+              if (!responseData.success) {
+                setErrorSnackbarOpen(true)
+                return
+              }
+              const token = responseData.loginToken
+              dispatch(setUsernameToken({
+                username, token
+              }))
               await saveData({
                 username, token
               })
@@ -131,6 +139,13 @@ export default function () {
             })()
           }}>Next</LoginButton>
         </ButtonGroup>
+        <Snackbar 
+          open={errorSnackbarOpen} 
+          autoHideDuration={6000} 
+          onClose={() => setErrorSnackbarOpen(false)} 
+        >
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >Wrong username or password</Alert>
+        </Snackbar>
       </LoginContainer>
     </LoginRoot>
   )

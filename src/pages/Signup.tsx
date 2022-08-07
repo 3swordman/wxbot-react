@@ -7,9 +7,12 @@ import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
 import FormControlLabel from '@mui/material/FormControlLabel'
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 
-import { setUsernamePassword } from "../state/auth"
+import { setUsernamePasswordConfirmText } from "../state/auth"
 import { useAppDispatch } from "../store"
+import { getConfirmText } from "../network"
 
 const SignupRoot = styled.div`
   display: flex;
@@ -64,6 +67,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   return (
@@ -141,13 +145,28 @@ export default function Signup() {
               return
             }
             setPasswordError(false)
-            dispatch(setUsernamePassword({
-              username,
-              password
-            }))
-            navigate("/verify")
+            ;(async function () {
+              const confirmText = await getConfirmText(username, password)
+              if (confirmText == null) {
+                setErrorSnackbarOpen(true)
+                return
+              }
+              dispatch(setUsernamePasswordConfirmText({
+                username,
+                password,
+                confirmText
+              }))
+              navigate("/verify")
+            })()
           }}>Next</RightButton>
         </ButtonGroup>
+        <Snackbar 
+          open={errorSnackbarOpen} 
+          autoHideDuration={6000} 
+          onClose={() => setErrorSnackbarOpen(false)} 
+        >
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >Repeated username</Alert>
+        </Snackbar>
       </SignupContainer>
     </SignupRoot>
   )

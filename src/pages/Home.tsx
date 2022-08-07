@@ -9,13 +9,14 @@ function Home() {
   const dispatch = useAppDispatch()
   const goodsValue = useAppSelector(state => state.goods.value)
   useEffect(() => {
-    setTimeout(() => {
+    (async function () {
       // why fucking useless clearGoods? because the strict mode of react will render the component twice. 
       if (!goodsValue.length) {
+        const goods = await getGoods()
         dispatch(clearGoods())
-        dispatch(addGoods(getGoods()))
+        dispatch(addGoods(goods))
       }
-    }, 0)
+    })()
   }, [])
   return (
     <>

@@ -49,10 +49,13 @@ export const currentGoodsSlice = createSlice({
         existedValue[1] = count
       }
 
+    },
+    clearGoods(state: GoodsState) {
+      state.value = []
     }
   }
 })
 
-export const { addGoods, setGoods } = currentGoodsSlice.actions
+export const { addGoods, setGoods, clearGoods } = currentGoodsSlice.actions
 
 export default currentGoodsSlice.reducer

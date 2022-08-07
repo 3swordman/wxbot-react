@@ -1,12 +1,8 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
-import CardActionArea from "@mui/material/CardActionArea"
-import CardActions from "@mui/material/CardActions"
 import IconButton from "@mui/material/IconButton"
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart"
 import Dialog from "@mui/material/Dialog"
@@ -15,12 +11,12 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import TextField from "@mui/material/TextField"
 import DialogActions from "@mui/material/DialogActions"
+import useMediaQuery from "@mui/material/useMediaQuery"
+import useTheme from "@mui/material/styles/useTheme"
 
 import { Good as GoodType } from "./constants"
 import { useAppSelector, useAppDispatch } from "./store"
 import { addGoods } from "./state/current-goods"
-import AppBar from "@mui/material/AppBar"
-import Toolbar from "@mui/material/Toolbar"
 
 const GoodContainer = styled.div`
   display: grid;
@@ -54,23 +50,32 @@ const CardSecondaryContainer = styled.div`
   }
 `
 
-const CardContentContainer = styled(CardContent)`
-  flex: 1 0 auto;
-`
-
 const CardButtonContainer = styled.div`
   margin-top: auto;
   display: flex;
 `
 
 const SizedImage = styled.img`
-  height: 100px;
   width: 100px;
   object-fit: contain;
+  
   ${({ theme }) => theme.breakpoints.up("md")} {
-    height: 200px;
     width: 200px;
   }
+`
+const LargerSizedImage = styled.img`
+  width: 200px;
+  object-fit: contain;
+  
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    width: 300px;
+  }
+`
+
+const Images = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 `
 
 const FlexTypography = styled(Typography)`
@@ -87,12 +92,40 @@ const DialogParagraph = styled.div`
   margin-bottom: 0.375em;
 `
 
+const DialogContentTextRoot = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    flex-direction: row;
+  }
+`
+
+const DialogContentTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  & :nth-child(2) {
+    &:before {
+      content: "Description: "
+    }
+  }
+`
+
+const FullWidthTypography: any = styled(Typography)`
+  &::after {
+    visibility: hidden;
+    display: block;
+    content: "This is the internal implementation which is not right, but I can't find any other solutions";
+    line-height: 0;
+  }
+`
 
 export function Good({ good }: { good: GoodType }) {
   const { title, description, imageSrc, price } = good
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogValue, setDialogValue] = useState(1)
   const dispatch = useAppDispatch()
+  const theme = useTheme()
+  const smallDevice = useMediaQuery(theme.breakpoints.down("sm"))
   function addNewGoods(count: number) {
     dispatch(addGoods({
       good,
@@ -101,18 +134,31 @@ export function Good({ good }: { good: GoodType }) {
   }
   return (
     <>
-      <Dialog open={dialogOpen}>
+      <Dialog open={dialogOpen} fullScreen={smallDevice}>
         <DialogTitle>{title} imformation</DialogTitle>
         <DialogContent>
           <DialogContentText component="div">
-            <DialogParagraph>Description: {description}</DialogParagraph>
-            <DialogParagraph>Price: ${price}</DialogParagraph>
+            <DialogContentTextRoot>
+              <DialogContentTextContainer>
+                <DialogParagraph>Price: ${price}</DialogParagraph>
+                {good.longDescription?.map(text => (
+                  <DialogParagraph key={text}>{text}</DialogParagraph>
+                )) ?? (
+                  <DialogParagraph>{description}</DialogParagraph>
+                )}
+              </DialogContentTextContainer>
+              <Images>
+                {good.imageSrc.map(src => (
+                  <LargerSizedImage src={src} alt={title} key={src} />
+                ))}
+              </Images>
+            </DialogContentTextRoot>
           </DialogContentText>
           <TextField 
             autoFocus 
             label="The number of the good" 
             inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }} 
-            margin="dense" 
+            margin="normal" 
             value={dialogValue} 
             onChange={ev => {
               if (ev.target.value) {
@@ -143,9 +189,9 @@ export function Good({ good }: { good: GoodType }) {
               ${price}
             </RightTypography>
           </FlexTypography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
+          <FullWidthTypography variant="subtitle1" color="text.secondary" component="div">
             {description}
-          </Typography>
+          </FullWidthTypography>
           <CardButtonContainer>
             <Button onClick={() => setDialogOpen(true)}>
               Show imformation
@@ -157,7 +203,7 @@ export function Good({ good }: { good: GoodType }) {
             </IconButton>
           </CardButtonContainer>
         </CardSecondaryContainer>
-        <SizedImage src={imageSrc} alt={title} />
+        <SizedImage src={imageSrc[0]} alt={title} />
       </CardContainer>
     </>
   )

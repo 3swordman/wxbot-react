@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom"
 
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 
 import { setUsernameToken } from "../state/auth"
 import { useAppDispatch, useAppSelector, saveData } from "../store"
-import { getToken } from "../network"
+import { getToken, verify } from "../network"
 
 const VerifyRoot = styled.div`
   display: flex;
@@ -55,34 +57,47 @@ const RightButton = styled(NoneTransformButton)`
 `
 
 export default function Verify() {
-  const [verifyString, setVerifyString] = useState("")
   const navigate = useNavigate()
   const authData = useAppSelector(state => state.auth.value)!
+  const [confirmText2, setConfirmText2] = useState<string | null>(null)
   const dispatch = useAppDispatch()
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false)
   useEffect(() => {
-    if (authData == undefined) {
+    if (authData == undefined || authData.confirmText == undefined || authData.password == undefined) {
       navigate("/signup")
     }
-    setVerifyString(Math.floor(Math.pow(36, 8) * Math.random()).toString(36))
   }, [])
   return (
     <VerifyRoot>
+      <Snackbar 
+        open={errorSnackbarOpen} 
+        autoHideDuration={6000} 
+        onClose={() => setErrorSnackbarOpen(false)} 
+      >
+        <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)}>Seems you didn't send it, please send the new message instead later</Alert>
+      </Snackbar>
       <VerifyContainer>
         <Typography variant="h5">Verify your Wechat account</Typography>
         <SpaceTypography variant="subtitle1">For your safety, Store wants to make sure it's really you. Please send the following message to the Wechat group.</SpaceTypography>
-        <MonoSpaceTypography variant="h6">verify-wechat-{verifyString}</MonoSpaceTypography>
+        <MonoSpaceTypography variant="h6">{confirmText2 || authData.confirmText!}</MonoSpaceTypography>
         <ButtonGroup>
           <NoneTransformButton onClick={() => {
             navigate("/signup")
           }}>Back</NoneTransformButton>
           <RightButton variant="contained" onClick={() => {
-            const { username, password } = authData
-            const token = getToken(username, password!)
-            dispatch(setUsernameToken({
-              username, 
-              token: getToken(username, password!)
-            }))
             ;(async () => {
+              const { username, password } = authData
+              const { success, confirmText } = await verify(username)
+              if (!success) {
+                setConfirmText2(confirmText)
+                setErrorSnackbarOpen(true)
+                return
+              }
+              const token = (await getToken(username, password!)).loginToken
+              dispatch(setUsernameToken({
+                username, 
+                token
+              }))
               await saveData({
                 username, token
               })
