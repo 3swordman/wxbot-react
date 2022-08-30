@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import styled from "styled-components"
 import Card from "@mui/material/Card"
 import Typography from "@mui/material/Typography"
@@ -13,6 +14,7 @@ import TextField from "@mui/material/TextField"
 import DialogActions from "@mui/material/DialogActions"
 import useMediaQuery from "@mui/material/useMediaQuery"
 import useTheme from "@mui/material/styles/useTheme"
+import Chip from "@mui/material/Chip"
 
 import { Good as GoodType } from "./constants"
 import { useAppSelector, useAppDispatch } from "./store"
@@ -100,6 +102,15 @@ const DialogContentTextRoot = styled.div`
   }
 `
 
+const DialogContentCategoryList = styled.div`
+  display: flex;
+  margin-bottom: 0.5em;
+  flex-wrap: wrap;
+  & > * + * {
+    margin-left: 0.5em;
+  }
+`
+
 const DialogContentTextContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -126,6 +137,7 @@ export function Good({ good }: { good: GoodType }) {
   const dispatch = useAppDispatch()
   const theme = useTheme()
   const smallDevice = useMediaQuery(theme.breakpoints.down("sm"))
+  const { t } = useTranslation()
   function addNewGoods(count: number) {
     dispatch(addGoods({
       good,
@@ -135,8 +147,13 @@ export function Good({ good }: { good: GoodType }) {
   return (
     <>
       <Dialog open={dialogOpen} fullScreen={smallDevice}>
-        <DialogTitle>{title} imformation</DialogTitle>
+        <DialogTitle>{title} {t("information")}</DialogTitle>
         <DialogContent>
+          <DialogContentCategoryList>
+            {good.category.map(value => (
+              <Chip label={t(value)} key={value} />
+            ))}
+          </DialogContentCategoryList>
           <DialogContentText component="div">
             <DialogContentTextRoot>
               <DialogContentTextContainer>
@@ -156,7 +173,7 @@ export function Good({ good }: { good: GoodType }) {
           </DialogContentText>
           <TextField 
             autoFocus 
-            label="The number of the good" 
+            label={t("The number of the good")}
             inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }} 
             margin="normal" 
             value={dialogValue} 
@@ -172,8 +189,8 @@ export function Good({ good }: { good: GoodType }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>close</Button>
-          <IconButton color="primary" aria-label="add to shopping cart" onClick={() => {
+          <Button onClick={() => setDialogOpen(false)}>{t("close")}</Button>
+          <IconButton color="primary" aria-label={t("add to shopping cart")} onClick={() => {
             addNewGoods(dialogValue)
             setDialogOpen(false)
           }}>
@@ -194,7 +211,7 @@ export function Good({ good }: { good: GoodType }) {
           </FullWidthTypography>
           <CardButtonContainer>
             <Button onClick={() => setDialogOpen(true)}>
-              Show imformation
+              {t("Show information")}
             </Button>
             <IconButton color="primary" aria-label="add to shopping cart" onClick={() => {
               addNewGoods(1)

@@ -11,6 +11,7 @@ import {
 } from "@mui/material/styles"
 
 import store from "./store"
+import "./i18n"
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -25,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: inherit;
   }
 `
-if (navigator.serviceWorker && import.meta.env.PROD && false) {
+if (navigator.serviceWorker && import.meta.env.PROD) {
   navigator.serviceWorker
     .register("./sw.js")
     .then(function () {

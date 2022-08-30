@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
@@ -70,20 +71,21 @@ export default function () {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
-  const logined = !!(authData && authData.token)
+  const logged = !!(authData && authData.token)
+  const { t } = useTranslation()
   useEffect(() => {
-    if (logined) {
+    if (logged) {
       navigate(-1)
     }
-  }, [logined])
+  }, [logged])
   return (
     <LoginRoot>
       <LoginContainer>
-        <CenterTitle variant="h5">Sign in</CenterTitle>
-        <CenterTitle variant="subtitle1">Use your star account</CenterTitle>
+        <CenterTitle variant="h5">{t("Sign in")}</CenterTitle>
+        <CenterTitle variant="subtitle1">{t("Use your star account")}</CenterTitle>
         <TextField 
           autoComplete="username" 
-          label="Username"
+          label={t("Username")}
           autoFocus 
           value={username} 
           onChange={ev => setUsername(ev.target.value)} 
@@ -94,7 +96,7 @@ export default function () {
         />
         <TextField 
           autoComplete="password"
-          label="Password"
+          label={t("Password")}
           type="password"
           value={password} 
           onChange={ev => setPassword(ev.target.value)} 
@@ -103,21 +105,21 @@ export default function () {
           error={passwordError}
           helperText={passwordHelperText}
         />
-        <ForgotPasswordButton size="small">Forgot password?</ForgotPasswordButton>
+        <ForgotPasswordButton size="small">{t("Forgot password?")}</ForgotPasswordButton>
         <ButtonGroup>
           <NoneTransformButton onClick={() => {
             navigate("/signup")
-          }}>Create account</NoneTransformButton>
+          }}>{t("Create account")}</NoneTransformButton>
           <LoginButton variant="contained" onClick={() => {
             let allSuccess = true
             if (username == "") {
               setUsernameError(true)
-              setUsernameHelperText("This can't be blank")
+              setUsernameHelperText(t("This can't be blank"))
               allSuccess = false
             }
             if (password == "") {
               setPasswordError(true)
-              setPasswordHelperText("This can't be blank")
+              setPasswordHelperText(t("This can't be blank"))
               allSuccess = false
             }
             if (!allSuccess)
@@ -137,14 +139,14 @@ export default function () {
               })
               navigate("/")
             })()
-          }}>Next</LoginButton>
+          }}>{t("Next")}</LoginButton>
         </ButtonGroup>
         <Snackbar 
           open={errorSnackbarOpen} 
           autoHideDuration={6000} 
           onClose={() => setErrorSnackbarOpen(false)} 
         >
-          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >Wrong username or password</Alert>
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >{t("Wrong username or password")}</Alert>
         </Snackbar>
       </LoginContainer>
     </LoginRoot>

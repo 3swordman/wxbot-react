@@ -5,7 +5,8 @@ export interface Good {
   longDescription?: string[],
   imageSrc: string[],
   price: number,
-  id: number
+  id: number,
+  category: string[]
 }
 
 export const API_URL = "https://api.score-store.intirain.cc"

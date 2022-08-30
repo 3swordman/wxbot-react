@@ -11,7 +11,7 @@ self.addEventListener("activate", function (event) {
   return self.clients.claim()
 })
 self.addEventListener("fetch", function (event) {
-  var allowedHosts = /(localhost|fonts\.google\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|www\.3swordman\.tk)/i
+  var allowedHosts = /(localhost|fonts\.google\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.3swordman\.tk)/i
   var deniedAssets = /(sw\.js|sw-install\.js|@|node_modules)/i
   var htmlDocument = /(\/|\.html)$/i
   if (!(allowedHosts.test(event.request.url) && !deniedAssets.test(event.request.url))) {
@@ -38,8 +38,6 @@ self.addEventListener("fetch", function (event) {
             cache.put(event.request, fetchedResponse.clone())
             return fetchedResponse
           })
-        }).catch(function (err) {
-          console.error(err)
         })
       )
     })

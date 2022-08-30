@@ -16,7 +16,7 @@ function sleep(time: number): Promise<void> {
 export async function getGoods(): Promise<Good[]> {
   // TODO: must cache!!!
   if (goods == null) {
-    goods = JSON.parse((await axios.get<string>("/get-goods")).data) as Good[]
+    goods = JSON.parse((await axios.get<string>("/get-goods")).data).goods as Good[]
   }
   return goods
 }

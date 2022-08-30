@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
@@ -70,15 +71,16 @@ export default function Signup() {
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   return (
     <SignupRoot>
       <SignupContainer>
-        <Typography variant="h5">Create your star account</Typography>
+        <Typography variant="h5">{t("Create your star account")}</Typography>
         <TextField 
-          label="Username" 
+          label={t("Username")} 
           margin="normal" 
           size="small" 
-          helperText="You can use letters, numbers & periods" 
+          helperText={t("You can use letters, numbers & periods")} 
           autoComplete="username" 
           value={username} 
           autoFocus 
@@ -92,7 +94,7 @@ export default function Signup() {
         />
         <PasswordList>
           <TextField 
-            label="Password" 
+            label={t("Password")} 
             margin="normal" 
             size="small" 
             type={showPassword ? "text" : "password"} 
@@ -107,7 +109,7 @@ export default function Signup() {
             error={passwordError}
           />
           <TextField 
-            label="Confirm" 
+            label={t("Confirm")} 
             margin="normal" 
             size="small" 
             type={showPassword ? "text" : "password"} 
@@ -129,12 +131,12 @@ export default function Signup() {
         <FormControlLabel 
           control={<Checkbox value={showPassword} 
           onChange={ev => setShowPassword(ev.target.checked)} />} 
-          label="Show password" 
+          label={t("Show password")} 
         />
         <ButtonGroup>
           <NoneTransformButton onClick={() => {
             navigate("/login")
-          }}>Sign in instead</NoneTransformButton>
+          }}>{t("Sign in instead")}</NoneTransformButton>
           <RightButton variant="contained" onClick={() => {
             if (password != confirmPassword || confirmPassword == "" || password == "" || username == "") {
               setPasswordError(true)
@@ -158,14 +160,14 @@ export default function Signup() {
               }))
               navigate("/verify")
             })()
-          }}>Next</RightButton>
+          }}>{t("Next")}</RightButton>
         </ButtonGroup>
         <Snackbar 
           open={errorSnackbarOpen} 
           autoHideDuration={6000} 
           onClose={() => setErrorSnackbarOpen(false)} 
         >
-          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >Repeated username</Alert>
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >{t("Repeated username")}</Alert>
         </Snackbar>
       </SignupContainer>
     </SignupRoot>

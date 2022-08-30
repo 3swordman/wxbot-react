@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import styled from "styled-components"
 import AppBar from "@mui/material/AppBar"
@@ -21,7 +22,8 @@ export default function () {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
-  const logined = authData != undefined && authData.token != undefined
+  const logged = authData != undefined && authData.token != undefined
+  const { t } = useTranslation()
   return (
     <AppBar component="nav" position="static">
       <Toolbar>
@@ -29,30 +31,30 @@ export default function () {
           variant="h6"
           component="div"
         >
-          Score store
+          {t("Score store")}
         </Typography>
         <WhiteButton onClick={() => {
           navigate("/")
         }}>
-          home
+          {t("home")}
         </WhiteButton>
         <WhiteButton onClick={() => {
           navigate("/checkout")
         }}>
-          checkout
+          {t("checkout")}
         </WhiteButton>
-        {logined ? (
+        {logged ? (
           <WhiteButton onClick={() => {
             dispatch(logout())
             clearData()
           }}>
-            logout
+            {t("logout")}
           </WhiteButton>
         ) : (
           <WhiteButton onClick={() => {
             navigate("/login")
           }}>
-            login
+          {t("login")}
           </WhiteButton>
         )}
       </Toolbar>

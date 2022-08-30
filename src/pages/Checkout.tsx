@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import styled from "styled-components"
 import Divider from "@mui/material/Divider"
 import List from "@mui/material/List"
@@ -27,11 +28,17 @@ const CheckoutListRoot = styled(List)`
 
 const DetailRoot = styled.div`
   display: flex;
+  ${({ theme }) => theme.breakpoints.down("sm")} {
+    flex-direction: column;
+  }
 `
 
 const PriceInfoContainer = styled.div`
   display: flex;
   margin-left: auto;
+  ${({ theme }) => theme.breakpoints.down("sm")} {
+    margin-right: 1em;
+  }
 `
 
 const PriceInfo = styled(Typography)`
@@ -43,6 +50,9 @@ const RightButton = styled(Button)`
   margin-left: 1em;
   margin-right: 1em;
   display: flex;
+  ${({ theme }) => theme.breakpoints.down("sm")} {
+    margin-left: auto;
+  }
 `
 
 const DialogParagraph = styled.div`
@@ -52,13 +62,14 @@ const DialogParagraph = styled.div`
 function CheckoutItem({ good, index, count }: { good: Good, index: number, count: number }) {
   // TODO: auto focus after the component rerendered
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   return (
     <>
       {!!index && (
         <Divider component="li" />
       )}
       <ListItem>
-        <ListItemText primary={good.title} secondary={"unit price: $" + good.price + ", total price: $" + good.price * count}></ListItemText>
+        <ListItemText primary={good.title} secondary={`${t("unit price")}: $${good.price}, ${t("total price")}: $${good.price * count}`}></ListItemText>
         <TextField
           label="Count"
           type="number"
@@ -112,6 +123,7 @@ export default function CheckoutList() {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false)
   const [checkoutError, setCheckoutError] = useState(false)
   const [reason, setReason] = useState("")
+  const { t } = useTranslation()
   useEffect(function () {
     (async function () {
       if (username == null || loginToken == null) {
@@ -136,7 +148,7 @@ export default function CheckoutList() {
         <DialogTitle>Checkout</DialogTitle>
         <DialogContent>
           <DialogContentText component="div">
-            <DialogParagraph>Are you really sure you want this? </DialogParagraph>
+            <DialogParagraph>{t("Are you really sure you want this? ")}</DialogParagraph>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -153,9 +165,9 @@ export default function CheckoutList() {
                 setCheckoutSuccess(false)
                 setCheckoutError(true)
                 setReason({
-                  "1001": "No enough score",
+                  "1001": "Score is not enough",
                   "1002": "Auth failed",
-                  "1003": "Good imformation loading failed",
+                  "1003": "Good information loading failed",
                   "1004": "Points exceed daily limit", 
                   "9999": "Unknown error"
                 }[errCode]!)
@@ -174,9 +186,9 @@ export default function CheckoutList() {
         <PriceInfoContainer>
           <PriceInfo variant="h6">
             {score == null ? (
-              `total price: $${totalPrice}`
+              `${t("total price")}: $${totalPrice}`
             ) : (
-              `price: $${score} - $${totalPrice} = $${score - totalPrice}`
+              `${t("price")}: $${score} - $${totalPrice} = $${score - totalPrice}`
             )}
           </PriceInfo>
         </PriceInfoContainer>
@@ -185,7 +197,7 @@ export default function CheckoutList() {
           onClick={() => setDialogOpen(true)} 
           disabled={score == null || totalPrice >= score! || totalPrice == 0}
         >
-          checkout now{score == null && " (you must login first)"}
+          {t("checkout now")}{score == null && t(" (you must login first)")}
         </RightButton>
       </DetailRoot>
     </>
