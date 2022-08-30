@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: inherit;
   }
 `
-if (navigator.serviceWorker && import.meta.env.PROD) {
+if (navigator.serviceWorker && import.meta.env.PROD && Math.random() > 100) {
   navigator.serviceWorker
     .register("./sw.js")
     .then(function () {
