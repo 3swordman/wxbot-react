@@ -103,7 +103,7 @@ export default function Signup() {
             onChange={ev => {
               setPassword(ev.target.value)
             }} 
-            onBlur={ev => {
+            onBlur={() => {
               setPasswordError(password != confirmPassword && confirmPassword != "" || password == "")
             }}
             error={passwordError}
@@ -118,7 +118,7 @@ export default function Signup() {
             onChange={ev => {
               setConfirmPassword(ev.target.value)
             }} 
-            onBlur={ev => {
+            onBlur={() => {
               if (password != confirmPassword || confirmPassword == "") {
                 setPasswordError(true)
               } else {
@@ -130,7 +130,7 @@ export default function Signup() {
         </PasswordList>
         <FormControlLabel 
           control={<Checkbox value={showPassword} 
-          onChange={ev => setShowPassword(ev.target.checked)} />} 
+          onChange={ev => setShowPassword((ev.target! as HTMLInputElement).checked)} />} 
           label={t("Show password")} 
         />
         <ButtonGroup>

@@ -31,8 +31,8 @@ export async function saveData({ username, token }: {
 }
 
 export async function restoreData() {
-  const username = await localforage.getItem("username")
-  const token = await localforage.getItem("token")
+  const username = await localforage.getItem<string>("username")
+  const token = await localforage.getItem<string>("token")
   return { username, token }
 }
 

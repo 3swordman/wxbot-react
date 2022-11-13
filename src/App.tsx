@@ -55,7 +55,7 @@ export default function App() {
       }
       dispatch(setUsernameToken({
         username, token
-      } as any))
+      }))
     })()
   }, [])
   return (
