@@ -9,4 +9,4 @@ export interface Good {
   category: string[]
 }
 
-export const API_URL = "https://api.score-store.intirain.cc"
+export const API_URL = "http://api.score-store.siliconbio.org.cn"

@@ -81,7 +81,7 @@ export default function Verify() {
       <VerifyContainer>
         <Typography variant="h5">{t("Verify your Wechat account")}</Typography>
         <SpaceTypography variant="subtitle1">{t("For your safety, Store wants to make sure it's really you. Please send the following message to the Wechat group.")}</SpaceTypography>
-        <MonoSpaceTypography variant="h6">{confirmText2 || authData.confirmText!}</MonoSpaceTypography>
+        <MonoSpaceTypography variant="h6">&login {confirmText2 || authData.confirmText!}</MonoSpaceTypography>
         <ButtonGroup>
           <NoneTransformButton onClick={() => {
             navigate("/signup")
