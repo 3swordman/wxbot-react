@@ -14,11 +14,15 @@ function sleep(time: number): Promise<void> {
 }
 
 async function postRequest<ReturnType>(url: string, data: unknown) {
-  return JSON.parse((await axios.post(url, JSON.stringify(data), {
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })).data) as ReturnType
+  return JSON.parse(
+    (
+      await axios.post(url, JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+    ).data
+  ) as ReturnType
 }
 
 export async function getGoods(): Promise<Good[]> {
@@ -31,48 +35,49 @@ export async function getGoods(): Promise<Good[]> {
 
 export async function getToken(username: string, password: string) {
   return await postRequest<{
-    success: boolean,
+    success: boolean
     loginToken: string
   }>("/login", { username, password })
 }
 
 export async function getConfirmText(username: string, password: string) {
   const content = await postRequest<{
-    confirmText: string | null,
+    confirmText: string | null
     loginToken: string | null
   }>("/signup", { username, password })
-    
+
   return content.confirmText
 }
 
 export async function verify(username: string) {
   return postRequest<{
-    success: boolean,
+    success: boolean
     confirmText: string | null
   }>("/verify", { username })
-
 }
 
 export async function checkout(username: string, loginToken: string, goods: [Good, number][]) {
   return postRequest<{
-    success: boolean,
+    success: boolean
     errCode: number
   }>("/checkout", {
-    username, 
+    username,
     loginToken,
     goods: goods.map(([good, count]) => ({
       id: good.id,
       count
     }))
   })
-
 }
 
 export async function getScore(username: string): Promise<number> {
-  return JSON.parse((await axios.get("/get-score-info", {
-    params: {
-      username
-    }
-  })).data).score
-
+  return JSON.parse(
+    (
+      await axios.get("/get-score-info", {
+        params: {
+          username
+        }
+      })
+    ).data
+  ).score
 }

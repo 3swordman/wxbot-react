@@ -2,9 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface AuthState {
   value?: {
-    username: string,
-    token?: string,
-    password?: string,
+    username: string
+    token?: string
+    password?: string
     confirmText?: string
   }
 }
@@ -15,10 +15,13 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUsernameToken(state: AuthState, payload: PayloadAction<{
-      username: string,
-      token: string
-    }>) {
+    setUsernameToken(
+      state: AuthState,
+      payload: PayloadAction<{
+        username: string
+        token: string
+      }>
+    ) {
       const { username, token } = payload.payload
       if (state.value == undefined) {
         state.value = {
@@ -30,11 +33,14 @@ export const authSlice = createSlice({
         state.value.token = token
       }
     },
-    setUsernamePasswordConfirmText(state: AuthState, payload: PayloadAction<{
-      username: string,
-      password: string,
-      confirmText: string
-    }>) {
+    setUsernamePasswordConfirmText(
+      state: AuthState,
+      payload: PayloadAction<{
+        username: string
+        password: string
+        confirmText: string
+      }>
+    ) {
       const { username, password, confirmText } = payload.payload
       if (state.value == undefined) {
         state.value = {

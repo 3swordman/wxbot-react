@@ -2,8 +2,7 @@ import { useEffect, lazy, Suspense, useState } from "react"
 import { Routes, Route } from "react-router-dom"
 import styled from "styled-components"
 
-import Backdrop from "@mui/material/Backdrop"
-import CircularProgress from "@mui/material/CircularProgress"
+import { Backdrop, CircularProgress } from "@mui/material"
 
 import NavBar from "./Navbar"
 
@@ -48,26 +47,64 @@ function LoadingWithDelay() {
 export default function App() {
   const dispatch = useAppDispatch()
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const { username, token } = await restoreData()
       if (username == null || token == null) {
         return
       }
-      dispatch(setUsernameToken({
-        username, token
-      }))
+      dispatch(
+        setUsernameToken({
+          username,
+          token
+        })
+      )
     })()
   }, [])
   return (
     <>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Suspense fallback={<LoadingWithDelay />}><Home /></Suspense>} />
-        <Route path="/checkout" element={<Suspense fallback={<LoadingWithDelay />}><Checkout /></Suspense>} />
-        <Route path="/login" element={<Suspense fallback={<LoadingWithDelay />}><Login /></Suspense>} />
-        <Route path="/signup" element={<Suspense fallback={<LoadingWithDelay />}><Signup /></Suspense>} />
-        <Route path="/verify" element={<Suspense fallback={<LoadingWithDelay />}><Verify /></Suspense>} />
+        <Route
+          path="/"
+          element={
+            <Suspense fallback={<LoadingWithDelay />}>
+              <Home />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <Suspense fallback={<LoadingWithDelay />}>
+              <Checkout />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<LoadingWithDelay />}>
+              <Login />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <Suspense fallback={<LoadingWithDelay />}>
+              <Signup />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/verify"
+          element={
+            <Suspense fallback={<LoadingWithDelay />}>
+              <Verify />
+            </Suspense>
+          }
+        />
       </Routes>
     </>
-  )  
+  )
 }

@@ -3,10 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
+import { Button, Typography, Snackbar, Alert } from "@mui/material"
 
 import { setUsernameToken } from "../state/auth"
 import { useAppDispatch, useAppSelector, saveData } from "../store"
@@ -71,41 +68,55 @@ export default function Verify() {
   }, [])
   return (
     <VerifyRoot>
-      <Snackbar 
-        open={errorSnackbarOpen} 
-        autoHideDuration={6000} 
-        onClose={() => setErrorSnackbarOpen(false)} 
-      >
-        <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)}>{t("Seems you didn't send it, please send the new message instead later")}</Alert>
+      <Snackbar open={errorSnackbarOpen} autoHideDuration={6000} onClose={() => setErrorSnackbarOpen(false)}>
+        <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)}>
+          {t("Seems you didn't send it, please send the new message instead later")}
+        </Alert>
       </Snackbar>
       <VerifyContainer>
         <Typography variant="h5">{t("Verify your Wechat account")}</Typography>
-        <SpaceTypography variant="subtitle1">{t("For your safety, Store wants to make sure it's really you. Please send the following message to the Wechat group.")}</SpaceTypography>
+        <SpaceTypography variant="subtitle1">
+          {t(
+            "For your safety, Store wants to make sure it's really you. Please send the following message to the Wechat group."
+          )}
+        </SpaceTypography>
         <MonoSpaceTypography variant="h6">&login {confirmText2 || authData.confirmText!}</MonoSpaceTypography>
         <ButtonGroup>
-          <NoneTransformButton onClick={() => {
-            navigate("/signup")
-          }}>{t("Back")}</NoneTransformButton>
-          <RightButton variant="contained" onClick={() => {
-            ;(async () => {
-              const { username, password } = authData
-              const { success, confirmText } = await verify(username)
-              if (!success) {
-                setConfirmText2(confirmText)
-                setErrorSnackbarOpen(true)
-                return
-              }
-              const token = (await getToken(username, password!)).loginToken
-              dispatch(setUsernameToken({
-                username, 
-                token
-              }))
-              await saveData({
-                username, token
-              })
-              navigate("/")
-            })()
-          }}>{t("I've already sent")}</RightButton>
+          <NoneTransformButton
+            onClick={() => {
+              navigate("/signup")
+            }}
+          >
+            {t("Back")}
+          </NoneTransformButton>
+          <RightButton
+            variant="contained"
+            onClick={() => {
+              ;(async () => {
+                const { username, password } = authData
+                const { success, confirmText } = await verify(username)
+                if (!success) {
+                  setConfirmText2(confirmText)
+                  setErrorSnackbarOpen(true)
+                  return
+                }
+                const token = (await getToken(username, password!)).loginToken
+                dispatch(
+                  setUsernameToken({
+                    username,
+                    token
+                  })
+                )
+                await saveData({
+                  username,
+                  token
+                })
+                navigate("/")
+              })()
+            }}
+          >
+            {t("I've already sent")}
+          </RightButton>
         </ButtonGroup>
       </VerifyContainer>
     </VerifyRoot>

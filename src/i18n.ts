@@ -12,9 +12,8 @@ i18n
     fallbackLng: "en",
     debug: import.meta.env.DEV,
     interpolation: {
-      escapeValue: false,
+      escapeValue: false
     }
   })
-
 
 export default i18n

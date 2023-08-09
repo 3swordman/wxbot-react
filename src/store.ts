@@ -11,7 +11,7 @@ const store = configureStore({
     currentGoods: currentGoodsReducer,
     goods: goodsReducer,
     auth: authReducer
-  },
+  }
 })
 
 export default store
@@ -22,10 +22,7 @@ export type AppDispatch = typeof store.dispatch
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-export async function saveData({ username, token }: {
-  username: string,
-  token: string
-}) {
+export async function saveData({ username, token }: { username: string; token: string }) {
   await localforage.setItem("username", username)
   await localforage.setItem("token", token)
 }

@@ -3,13 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
-import Checkbox from "@mui/material/Checkbox"
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
+import { TextField, Typography, Button, Checkbox, FormControlLabel, Snackbar, Alert } from "@mui/material"
 
 import { setUsernamePasswordConfirmText } from "../state/auth"
 import { useAppDispatch } from "../store"
@@ -76,48 +70,48 @@ export default function Signup() {
     <SignupRoot>
       <SignupContainer>
         <Typography variant="h5">{t("Create your star account")}</Typography>
-        <TextField 
-          label={t("Username")} 
-          margin="normal" 
-          size="small" 
-          helperText={t("You can use letters, numbers & periods")} 
-          autoComplete="username" 
-          value={username} 
-          autoFocus 
+        <TextField
+          label={t("Username")}
+          margin="normal"
+          size="small"
+          helperText={t("You can use letters, numbers & periods")}
+          autoComplete="username"
+          value={username}
+          autoFocus
           error={usernameError}
           onChange={ev => {
             setUsername(ev.target.value)
-          }} 
+          }}
           onBlur={() => {
             setUsernameError(username == "")
           }}
         />
         <PasswordList>
-          <TextField 
-            label={t("Password")} 
-            margin="normal" 
-            size="small" 
-            type={showPassword ? "text" : "password"} 
+          <TextField
+            label={t("Password")}
+            margin="normal"
+            size="small"
+            type={showPassword ? "text" : "password"}
             autoComplete="new-password"
-            value={password} 
+            value={password}
             onChange={ev => {
               setPassword(ev.target.value)
-            }} 
+            }}
             onBlur={() => {
-              setPasswordError(password != confirmPassword && confirmPassword != "" || password == "")
+              setPasswordError((password != confirmPassword && confirmPassword != "") || password == "")
             }}
             error={passwordError}
           />
-          <TextField 
-            label={t("Confirm")} 
-            margin="normal" 
-            size="small" 
-            type={showPassword ? "text" : "password"} 
+          <TextField
+            label={t("Confirm")}
+            margin="normal"
+            size="small"
+            type={showPassword ? "text" : "password"}
             autoComplete="new-password"
-            value={confirmPassword} 
+            value={confirmPassword}
             onChange={ev => {
               setConfirmPassword(ev.target.value)
-            }} 
+            }}
             onBlur={() => {
               if (password != confirmPassword || confirmPassword == "") {
                 setPasswordError(true)
@@ -128,46 +122,56 @@ export default function Signup() {
             error={passwordError}
           />
         </PasswordList>
-        <FormControlLabel 
-          control={<Checkbox value={showPassword} 
-          onChange={ev => setShowPassword((ev.target! as HTMLInputElement).checked)} />} 
-          label={t("Show password")} 
+        <FormControlLabel
+          control={
+            <Checkbox value={showPassword} onChange={ev => setShowPassword((ev.target! as HTMLInputElement).checked)} />
+          }
+          label={t("Show password")}
         />
         <ButtonGroup>
-          <NoneTransformButton onClick={() => {
-            navigate("/login")
-          }}>{t("Sign in instead")}</NoneTransformButton>
-          <RightButton variant="contained" onClick={() => {
-            if (password != confirmPassword || confirmPassword == "" || password == "" || username == "") {
-              setPasswordError(true)
-              return
-            }
-            if (username == "") {
-              setUsernameError(true)
-              return
-            }
-            setPasswordError(false)
-            ;(async function () {
-              const confirmText = await getConfirmText(username, password)
-              if (confirmText == null) {
-                setErrorSnackbarOpen(true)
+          <NoneTransformButton
+            onClick={() => {
+              navigate("/login")
+            }}
+          >
+            {t("Sign in instead")}
+          </NoneTransformButton>
+          <RightButton
+            variant="contained"
+            onClick={() => {
+              if (password != confirmPassword || confirmPassword == "" || password == "" || username == "") {
+                setPasswordError(true)
                 return
               }
-              dispatch(setUsernamePasswordConfirmText({
-                username,
-                password,
-                confirmText
-              }))
-              navigate("/verify")
-            })()
-          }}>{t("Next")}</RightButton>
+              if (username == "") {
+                setUsernameError(true)
+                return
+              }
+              setPasswordError(false)
+              ;(async function () {
+                const confirmText = await getConfirmText(username, password)
+                if (confirmText == null) {
+                  setErrorSnackbarOpen(true)
+                  return
+                }
+                dispatch(
+                  setUsernamePasswordConfirmText({
+                    username,
+                    password,
+                    confirmText
+                  })
+                )
+                navigate("/verify")
+              })()
+            }}
+          >
+            {t("Next")}
+          </RightButton>
         </ButtonGroup>
-        <Snackbar 
-          open={errorSnackbarOpen} 
-          autoHideDuration={6000} 
-          onClose={() => setErrorSnackbarOpen(false)} 
-        >
-          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >{t("Repeated username")}</Alert>
+        <Snackbar open={errorSnackbarOpen} autoHideDuration={6000} onClose={() => setErrorSnackbarOpen(false)}>
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)}>
+            {t("Repeated username")}
+          </Alert>
         </Snackbar>
       </SignupContainer>
     </SignupRoot>

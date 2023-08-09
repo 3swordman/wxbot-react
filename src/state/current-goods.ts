@@ -19,10 +19,13 @@ export const currentGoodsSlice = createSlice({
   name: "current-goods",
   initialState,
   reducers: {
-    addGoods(state: GoodsState, payload: PayloadAction<{
-      good: Good,
-      count: number
-    }>) {
+    addGoods(
+      state: GoodsState,
+      payload: PayloadAction<{
+        good: Good
+        count: number
+      }>
+    ) {
       const { good, count } = payload.payload
       const value = state.value
       const existedValue = value.find(function ([good2, count]) {
@@ -34,10 +37,13 @@ export const currentGoodsSlice = createSlice({
         existedValue[1] += count
       }
     },
-    setGoods(state: GoodsState, payload: PayloadAction<{
-      good: Good,
-      count: number
-    }>) {
+    setGoods(
+      state: GoodsState,
+      payload: PayloadAction<{
+        good: Good
+        count: number
+      }>
+    ) {
       const { good, count } = payload.payload
       const value = state.value
       const existedValue = value.find(function ([good2, count]) {
@@ -48,7 +54,6 @@ export const currentGoodsSlice = createSlice({
       } else {
         existedValue[1] = count
       }
-
     },
     clearGoods(state: GoodsState) {
       state.value = []

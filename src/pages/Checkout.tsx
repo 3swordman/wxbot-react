@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import styled from "styled-components"
-import Divider from "@mui/material/Divider"
-import List from "@mui/material/List"
-import ListItem from "@mui/material/ListItem"
-import ListItemText from "@mui/material/ListItemText"
-import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
-import DialogActions from "@mui/material/DialogActions"
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
+import {
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Button,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Snackbar,
+  Alert
+} from "@mui/material"
 
 import { clearGoods, setGoods } from "../state/current-goods"
 import { useAppSelector, useAppDispatch } from "../store"
@@ -59,37 +61,42 @@ const DialogParagraph = styled.div`
   margin-bottom: 0.375em;
 `
 
-function CheckoutItem({ good, index, count }: { good: Good, index: number, count: number }) {
+function CheckoutItem({ good, index, count }: { good: Good; index: number; count: number }) {
   // TODO: auto focus after the component rerendered
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   return (
     <>
-      {!!index && (
-        <Divider component="li" />
-      )}
+      {!!index && <Divider component="li" />}
       <ListItem>
-        <ListItemText primary={good.title} secondary={`${t("unit price")}: $${good.price}, ${t("total price")}: $${good.price * count}`}></ListItemText>
+        <ListItemText
+          primary={good.title}
+          secondary={`${t("unit price")}: $${good.price}, ${t("total price")}: $${good.price * count}`}
+        ></ListItemText>
         <TextField
           label="Count"
           type="number"
           InputLabelProps={{
-            shrink: true,
+            shrink: true
           }}
           value={count}
           onChange={ev => {
             if (ev.target.value) {
               const num = parseInt(ev.target.value, 10)
               if (!Number.isNaN(num))
-                dispatch(setGoods({
-                  good, 
-                  count: num
-                }))
+                dispatch(
+                  setGoods({
+                    good,
+                    count: num
+                  })
+                )
             } else {
-              dispatch(setGoods({
-                good, 
-                count: 0
-              }))
+              dispatch(
+                setGoods({
+                  good,
+                  count: 0
+                })
+              )
             }
           }}
         />
@@ -124,25 +131,37 @@ export default function CheckoutList() {
   const [checkoutError, setCheckoutError] = useState(false)
   const [reason, setReason] = useState("")
   const { t } = useTranslation()
-  useEffect(function () {
-    (async function () {
-      if (username == null || loginToken == null) {
-        setScore(null)
-        return
-      }
-      setScore(await getScore(username))
-    })()
-  }, [username])
+  useEffect(
+    function () {
+      ;(async function () {
+        if (username == null || loginToken == null) {
+          setScore(null)
+          return
+        }
+        setScore(await getScore(username))
+      })()
+    },
+    [username]
+  )
   return (
     <>
-      <Snackbar open={checkoutSuccess || checkoutError} autoHideDuration={6000} onClose={() => {
-        setCheckoutSuccess(false)
-        setCheckoutError(false)
-      }}>
-        <Alert onClose={() => {
+      <Snackbar
+        open={checkoutSuccess || checkoutError}
+        autoHideDuration={6000}
+        onClose={() => {
           setCheckoutSuccess(false)
           setCheckoutError(false)
-        }} severity={checkoutSuccess ? "success" : "error"}>{reason}</Alert>
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setCheckoutSuccess(false)
+            setCheckoutError(false)
+          }}
+          severity={checkoutSuccess ? "success" : "error"}
+        >
+          {reason}
+        </Alert>
       </Snackbar>
       <Dialog open={dialogOpen}>
         <DialogTitle>Checkout</DialogTitle>
@@ -153,28 +172,34 @@ export default function CheckoutList() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>close</Button>
-          <Button onClick={() => {
-            (async function () {
-              const { success, errCode } = await checkout(username!, loginToken, currentGoods)
-              if (success) {
-                setCheckoutSuccess(true)
-                setCheckoutError(false)
-                setReason("Checkout successfully!")
-                dispatch(clearGoods())
-              } else {
-                setCheckoutSuccess(false)
-                setCheckoutError(true)
-                setReason({
-                  "1001": "Score is not enough",
-                  "1002": "Auth failed",
-                  "1003": "Good information loading failed",
-                  "1004": "Points exceed daily limit", 
-                  "9999": "Unknown error"
-                }[errCode]!)
-              }
-              setDialogOpen(false)
-            })()
-          }}>checkout</Button>
+          <Button
+            onClick={() => {
+              ;(async function () {
+                const { success, errCode } = await checkout(username!, loginToken, currentGoods)
+                if (success) {
+                  setCheckoutSuccess(true)
+                  setCheckoutError(false)
+                  setReason("Checkout successfully!")
+                  dispatch(clearGoods())
+                } else {
+                  setCheckoutSuccess(false)
+                  setCheckoutError(true)
+                  setReason(
+                    {
+                      "1001": "Score is not enough",
+                      "1002": "Auth failed",
+                      "1003": "Good information loading failed",
+                      "1004": "Points exceed daily limit",
+                      "9999": "Unknown error"
+                    }[errCode]!
+                  )
+                }
+                setDialogOpen(false)
+              })()
+            }}
+          >
+            checkout
+          </Button>
         </DialogActions>
       </Dialog>
       <CheckoutListRoot>
@@ -185,19 +210,18 @@ export default function CheckoutList() {
       <DetailRoot>
         <PriceInfoContainer>
           <PriceInfo variant="h6">
-            {score == null ? (
-              `${t("total price")}: $${totalPrice}`
-            ) : (
-              `${t("price")}: $${score} - $${totalPrice} = $${score - totalPrice}`
-            )}
+            {score == null
+              ? `${t("total price")}: $${totalPrice}`
+              : `${t("price")}: $${score} - $${totalPrice} = $${score - totalPrice}`}
           </PriceInfo>
         </PriceInfoContainer>
-        <RightButton 
-          variant="contained" 
-          onClick={() => setDialogOpen(true)} 
+        <RightButton
+          variant="contained"
+          onClick={() => setDialogOpen(true)}
           disabled={score == null || totalPrice >= score! || totalPrice == 0}
         >
-          {t("checkout now")}{score == null && t(" (you must login first)")}
+          {t("checkout now")}
+          {score == null && t(" (you must login first)")}
         </RightButton>
       </DetailRoot>
     </>

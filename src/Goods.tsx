@@ -60,7 +60,7 @@ const CardButtonContainer = styled.div`
 const SizedImage = styled.img`
   width: 100px;
   object-fit: contain;
-  
+
   ${({ theme }) => theme.breakpoints.up("md")} {
     width: 200px;
   }
@@ -68,7 +68,7 @@ const SizedImage = styled.img`
 const LargerSizedImage = styled.img`
   width: 200px;
   object-fit: contain;
-  
+
   ${({ theme }) => theme.breakpoints.up("md")} {
     width: 300px;
   }
@@ -116,7 +116,7 @@ const DialogContentTextContainer = styled.div`
   flex-direction: column;
   & :nth-child(2) {
     &:before {
-      content: "Description: "
+      content: "Description: ";
     }
   }
 `
@@ -139,15 +139,19 @@ export function Good({ good }: { good: GoodType }) {
   const smallDevice = useMediaQuery(theme.breakpoints.down("sm"))
   const { t } = useTranslation()
   function addNewGoods(count: number) {
-    dispatch(addGoods({
-      good,
-      count
-    }))
+    dispatch(
+      addGoods({
+        good,
+        count
+      })
+    )
   }
   return (
     <>
       <Dialog open={dialogOpen} fullScreen={smallDevice}>
-        <DialogTitle>{title} {t("information")}</DialogTitle>
+        <DialogTitle>
+          {title} {t("information")}
+        </DialogTitle>
         <DialogContent>
           <DialogContentCategoryList>
             {good.category.map(value => (
@@ -158,9 +162,7 @@ export function Good({ good }: { good: GoodType }) {
             <DialogContentTextRoot>
               <DialogContentTextContainer>
                 <DialogParagraph>Price: ${price}</DialogParagraph>
-                {good.longDescription?.map(text => (
-                  <DialogParagraph key={text}>{text}</DialogParagraph>
-                )) ?? (
+                {good.longDescription?.map(text => <DialogParagraph key={text}>{text}</DialogParagraph>) ?? (
                   <DialogParagraph>{description}</DialogParagraph>
                 )}
               </DialogContentTextContainer>
@@ -171,17 +173,16 @@ export function Good({ good }: { good: GoodType }) {
               </Images>
             </DialogContentTextRoot>
           </DialogContentText>
-          <TextField 
-            autoFocus 
+          <TextField
+            autoFocus
             label={t("The number of the good")}
-            inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }} 
-            margin="normal" 
-            value={dialogValue} 
+            inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+            margin="normal"
+            value={dialogValue}
             onChange={ev => {
               if (ev.target.value) {
                 const num = parseInt(ev.target.value, 10)
-                if (!Number.isNaN(num))
-                  setDialogValue(num)
+                if (!Number.isNaN(num)) setDialogValue(num)
               } else {
                 setDialogValue(0)
               }
@@ -190,10 +191,14 @@ export function Good({ good }: { good: GoodType }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>{t("close")}</Button>
-          <IconButton color="primary" aria-label={t("add to shopping cart")} onClick={() => {
-            addNewGoods(dialogValue)
-            setDialogOpen(false)
-          }}>
+          <IconButton
+            color="primary"
+            aria-label={t("add to shopping cart")}
+            onClick={() => {
+              addNewGoods(dialogValue)
+              setDialogOpen(false)
+            }}
+          >
             <AddShoppingCartIcon />
           </IconButton>
         </DialogActions>
@@ -202,20 +207,20 @@ export function Good({ good }: { good: GoodType }) {
         <CardSecondaryContainer>
           <FlexTypography variant="h5" component="div">
             {title}
-            <RightTypography variant="subtitle1">
-              ${price}
-            </RightTypography>
+            <RightTypography variant="subtitle1">${price}</RightTypography>
           </FlexTypography>
           <FullWidthTypography variant="subtitle1" color="text.secondary" component="div">
             {description}
           </FullWidthTypography>
           <CardButtonContainer>
-            <Button onClick={() => setDialogOpen(true)}>
-              {t("Show information")}
-            </Button>
-            <IconButton color="primary" aria-label="add to shopping cart" onClick={() => {
-              addNewGoods(1)
-            }}>
+            <Button onClick={() => setDialogOpen(true)}>{t("Show information")}</Button>
+            <IconButton
+              color="primary"
+              aria-label="add to shopping cart"
+              onClick={() => {
+                addNewGoods(1)
+              }}
+            >
               <AddShoppingCartIcon />
             </IconButton>
           </CardButtonContainer>
@@ -231,7 +236,9 @@ export function Goods() {
   return (
     <>
       <GoodContainer>
-        {goods.map(good => <Good good={good} key={good.title + good.id}></Good>)}
+        {goods.map(good => (
+          <Good good={good} key={good.title + good.id}></Good>
+        ))}
       </GoodContainer>
     </>
   )

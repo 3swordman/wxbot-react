@@ -2,11 +2,7 @@ import styled from "styled-components"
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
+import { TextField, Typography, Button, Snackbar, Alert } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 
 import { setUsernameToken } from "../state/auth"
@@ -83,23 +79,23 @@ export default function () {
       <LoginContainer>
         <CenterTitle variant="h5">{t("Sign in")}</CenterTitle>
         <CenterTitle variant="subtitle1">{t("Use your star account")}</CenterTitle>
-        <TextField 
-          autoComplete="username" 
+        <TextField
+          autoComplete="username"
           label={t("Username")}
-          autoFocus 
-          value={username} 
-          onChange={ev => setUsername(ev.target.value)} 
+          autoFocus
+          value={username}
+          onChange={ev => setUsername(ev.target.value)}
           margin="normal"
           fullWidth
           error={usernameError}
           helperText={usernameHelperText}
         />
-        <TextField 
+        <TextField
           autoComplete="password"
           label={t("Password")}
           type="password"
-          value={password} 
-          onChange={ev => setPassword(ev.target.value)} 
+          value={password}
+          onChange={ev => setPassword(ev.target.value)}
           margin="dense"
           fullWidth
           error={passwordError}
@@ -107,46 +103,56 @@ export default function () {
         />
         <ForgotPasswordButton size="small">{t("Forgot password?")}</ForgotPasswordButton>
         <ButtonGroup>
-          <NoneTransformButton onClick={() => {
-            navigate("/signup")
-          }}>{t("Create account")}</NoneTransformButton>
-          <LoginButton variant="contained" onClick={() => {
-            let allSuccess = true
-            if (username == "") {
-              setUsernameError(true)
-              setUsernameHelperText(t("This can't be blank"))
-              allSuccess = false
-            }
-            if (password == "") {
-              setPasswordError(true)
-              setPasswordHelperText(t("This can't be blank"))
-              allSuccess = false
-            }
-            if (!allSuccess)
-              return
-            ;(async () => {
-              const responseData = await getToken(username, password)
-              if (!responseData.success) {
-                setErrorSnackbarOpen(true)
-                return
+          <NoneTransformButton
+            onClick={() => {
+              navigate("/signup")
+            }}
+          >
+            {t("Create account")}
+          </NoneTransformButton>
+          <LoginButton
+            variant="contained"
+            onClick={() => {
+              let allSuccess = true
+              if (username == "") {
+                setUsernameError(true)
+                setUsernameHelperText(t("This can't be blank"))
+                allSuccess = false
               }
-              const token = responseData.loginToken
-              dispatch(setUsernameToken({
-                username, token
-              }))
-              await saveData({
-                username, token
-              })
-              navigate("/")
-            })()
-          }}>{t("Next")}</LoginButton>
+              if (password == "") {
+                setPasswordError(true)
+                setPasswordHelperText(t("This can't be blank"))
+                allSuccess = false
+              }
+              if (!allSuccess) return
+              ;(async () => {
+                const responseData = await getToken(username, password)
+                if (!responseData.success) {
+                  setErrorSnackbarOpen(true)
+                  return
+                }
+                const token = responseData.loginToken
+                dispatch(
+                  setUsernameToken({
+                    username,
+                    token
+                  })
+                )
+                await saveData({
+                  username,
+                  token
+                })
+                navigate("/")
+              })()
+            }}
+          >
+            {t("Next")}
+          </LoginButton>
         </ButtonGroup>
-        <Snackbar 
-          open={errorSnackbarOpen} 
-          autoHideDuration={6000} 
-          onClose={() => setErrorSnackbarOpen(false)} 
-        >
-          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)} >{t("Wrong username or password")}</Alert>
+        <Snackbar open={errorSnackbarOpen} autoHideDuration={6000} onClose={() => setErrorSnackbarOpen(false)}>
+          <Alert severity="error" onClose={() => setErrorSnackbarOpen(false)}>
+            {t("Wrong username or password")}
+          </Alert>
         </Snackbar>
       </LoginContainer>
     </LoginRoot>
