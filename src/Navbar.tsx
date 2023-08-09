@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 import styled from "styled-components"
@@ -15,51 +15,54 @@ const WhiteButton = styled(Button)`
   }
 `
 
-export default function () {
+export default function NavbarContainer() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
   const logged = authData != undefined && authData.token != undefined
   const { t } = useTranslation()
   return (
-    <AppBar component="nav" position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div">
-          {t("Score store")}
-        </Typography>
-        <WhiteButton
-          onClick={() => {
-            navigate("/")
-          }}
-        >
-          {t("home")}
-        </WhiteButton>
-        <WhiteButton
-          onClick={() => {
-            navigate("/checkout")
-          }}
-        >
-          {t("checkout")}
-        </WhiteButton>
-        {logged ? (
+    <>
+      <AppBar component="nav" position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div">
+            {t("Score store")}
+          </Typography>
           <WhiteButton
             onClick={() => {
-              dispatch(logout())
-              clearData()
+              navigate("/")
             }}
           >
-            {t("logout")}
+            {t("home")}
           </WhiteButton>
-        ) : (
           <WhiteButton
             onClick={() => {
-              navigate("/login")
+              navigate("/checkout")
             }}
           >
-            {t("login")}
+            {t("checkout")}
           </WhiteButton>
-        )}
-      </Toolbar>
-    </AppBar>
+          {logged ? (
+            <WhiteButton
+              onClick={() => {
+                dispatch(logout())
+                clearData()
+              }}
+            >
+              {t("logout")}
+            </WhiteButton>
+          ) : (
+            <WhiteButton
+              onClick={() => {
+                navigate("/login")
+              }}
+            >
+              {t("login")}
+            </WhiteButton>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Outlet />
+    </>
   )
 }

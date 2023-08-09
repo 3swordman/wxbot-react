@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 import { Backdrop, CircularProgress } from "@mui/material"
 
-import NavBar from "./Navbar"
+import NavbarContainer from "./Navbar"
 
 // import Home from "./pages/Home"
 // import Checkout from "./pages/Checkout"
@@ -47,46 +47,13 @@ function LoadingWithDelay() {
 const routerObject = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route
-        path="/"
-        element={
-          <Suspense fallback={<LoadingWithDelay />}>
-            <Home />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/checkout"
-        element={
-          <Suspense fallback={<LoadingWithDelay />}>
-            <Checkout />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <Suspense fallback={<LoadingWithDelay />}>
-            <Login />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <Suspense fallback={<LoadingWithDelay />}>
-            <Signup />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/verify"
-        element={
-          <Suspense fallback={<LoadingWithDelay />}>
-            <Verify />
-          </Suspense>
-        }
-      />
+      <Route element={<NavbarContainer />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/verify" element={<Verify />} />
+      </Route>
     </>
   )
 )
@@ -109,8 +76,9 @@ export default function App() {
   }, [])
   return (
     <>
-      <NavBar />
-      <RouterProvider router={routerObject} />
+      <Suspense fallback={<LoadingWithDelay />}>
+        <RouterProvider router={routerObject} />
+      </Suspense>
     </>
   )
 }
