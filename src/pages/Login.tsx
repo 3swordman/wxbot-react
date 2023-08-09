@@ -8,7 +8,6 @@ import Button from "@mui/material/Button"
 import Snackbar from "@mui/material/Snackbar"
 import Alert from "@mui/material/Alert"
 import { useNavigate } from "react-router-dom"
-import HCaptcha from "@hcaptcha/react-hcaptcha"
 
 import { setUsernameToken } from "../state/auth"
 import { useAppDispatch, useAppSelector, saveData } from "../store"
@@ -69,7 +68,6 @@ export default function () {
   const [passwordError, setPasswordError] = useState(false)
   const [passwordHelperText, setPasswordHelperText] = useState("")
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
@@ -107,10 +105,6 @@ export default function () {
           error={passwordError}
           helperText={passwordHelperText}
         />
-        <HCaptcha sitekey="5bf5fabf-a96e-4cd5-bb39-d5a96cf64ec6" onVerify={token => {
-          setCaptchaToken(token)
-          console.log(token)
-        }}></HCaptcha>
         <ForgotPasswordButton size="small">{t("Forgot password?")}</ForgotPasswordButton>
         <ButtonGroup>
           <NoneTransformButton onClick={() => {
