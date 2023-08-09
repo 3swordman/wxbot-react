@@ -2,7 +2,6 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import App from "./App"
 import { Provider } from "react-redux"
-import { BrowserRouter } from "react-router-dom"
 import { createGlobalStyle } from "styled-components"
 import { ThemeProvider, createTheme, StyledEngineProvider } from "@mui/material/styles"
 
@@ -36,9 +35,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <StyledEngineProvider injectFirst>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <App />
         </StyledEngineProvider>
       </ThemeProvider>
     </Provider>
