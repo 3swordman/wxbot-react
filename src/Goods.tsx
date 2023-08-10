@@ -19,6 +19,7 @@ import Chip from "@mui/material/Chip"
 import { Good as GoodType } from "./constants"
 import { useAppSelector, useAppDispatch } from "./store"
 import { addGoods } from "./state/current-goods"
+import { useGoods } from "./network"
 
 const GoodContainer = styled.div`
   display: grid;
@@ -232,11 +233,11 @@ export function Good({ good }: { good: GoodType }) {
 }
 
 export function Goods() {
-  const goods = useAppSelector(state => state.goods.value)
+  const {data: goods} = useGoods()
   return (
     <>
       <GoodContainer>
-        {goods.map(good => (
+        {goods!.map(good => (
           <Good good={good} key={good.title + good.id}></Good>
         ))}
       </GoodContainer>

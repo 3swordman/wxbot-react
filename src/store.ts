@@ -3,13 +3,11 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
 import localforage from "localforage"
 
 import currentGoodsReducer from "./state/current-goods"
-import goodsReducer from "./state/goods"
 import authReducer from "./state/auth"
 
 const store = configureStore({
   reducer: {
     currentGoods: currentGoodsReducer,
-    goods: goodsReducer,
     auth: authReducer
   }
 })

@@ -1,11 +1,7 @@
-import { Axios } from "axios"
+import { useQuery, QueryClient } from "@tanstack/react-query"
 import { API_URL, Good } from "./constants"
 
-const axios = new Axios({
-  baseURL: API_URL
-})
-
-let goods: Good[] | null = null
+export const queryClient = new QueryClient()
 
 function sleep(time: number): Promise<void> {
   return new Promise<void>((res, rej) => {
@@ -14,23 +10,23 @@ function sleep(time: number): Promise<void> {
 }
 
 async function postRequest<ReturnType>(url: string, data: unknown) {
-  return JSON.parse(
-    (
-      await axios.post(url, JSON.stringify(data), {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-    ).data
-  ) as ReturnType
+  return (await (
+    await fetch(API_URL + url, {
+      body: JSON.stringify(data),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+  ).json()) as ReturnType
 }
 
-export async function getGoods(): Promise<Good[]> {
-  // TODO: must cache!!!
-  if (goods == null) {
-    goods = JSON.parse((await axios.get<string>("/get-goods")).data).goods as Good[]
-  }
-  return goods
+export function useGoods() {
+  return useQuery({
+    queryKey: ["get-goods"],
+    queryFn: async () => (await (await fetch(API_URL + "/get-goods")).json()).goods as Good[],
+    placeholderData: []
+  })
 }
 
 export async function getToken(username: string, password: string) {
@@ -71,13 +67,15 @@ export async function checkout(username: string, loginToken: string, goods: [Goo
 }
 
 export async function getScore(username: string): Promise<number> {
-  return JSON.parse(
-    (
-      await axios.get("/get-score-info", {
-        params: {
-          username
-        }
-      })
-    ).data
+  return (
+    await (
+      await fetch(
+        API_URL +
+          "/get-score-info?" +
+          new URLSearchParams({
+            username
+          }).toString()
+      )
+    ).json()
   ).score
 }
