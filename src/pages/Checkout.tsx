@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import styled from "styled-components"
 import {
@@ -131,7 +131,7 @@ export default function CheckoutList() {
   const [checkoutError, setCheckoutError] = useState(false)
   const [reason, setReason] = useState("")
   const { t } = useTranslation()
-  useEffect(
+  useLayoutEffect(
     function () {
       ;(async function () {
         if (username == null || loginToken == null) {

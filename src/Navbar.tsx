@@ -6,6 +6,8 @@ import { AppBar, Toolbar, Button, Typography } from "@mui/material"
 
 import { logout } from "./state/auth"
 import { useAppSelector, useAppDispatch, clearData } from "./store"
+import { useState } from "react"
+import SellDialog from "./pages/Sell"
 
 const WhiteButton = styled(Button)`
   color: white;
@@ -20,6 +22,7 @@ export default function NavbarContainer() {
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
   const logged = authData != undefined && authData.token != undefined
+  const [sellDialogOpen, setSellDialogOpen] = useState(false)
   const { t } = useTranslation()
   return (
     <>
@@ -42,6 +45,13 @@ export default function NavbarContainer() {
           >
             {t("checkout")}
           </WhiteButton>
+          <WhiteButton
+            onClick={() => {
+              setSellDialogOpen(true)
+            }}
+          >
+            {t("Sell")}
+          </WhiteButton>
           {logged ? (
             <WhiteButton
               onClick={() => {
@@ -62,6 +72,7 @@ export default function NavbarContainer() {
           )}
         </Toolbar>
       </AppBar>
+      <SellDialog open={sellDialogOpen} setOpen={setSellDialogOpen} />
       <Outlet />
     </>
   )

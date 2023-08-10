@@ -58,29 +58,6 @@ const CardButtonContainer = styled.div`
   display: flex;
 `
 
-const SizedImage = styled.img`
-  width: 100px;
-  object-fit: contain;
-
-  ${({ theme }) => theme.breakpoints.up("md")} {
-    width: 200px;
-  }
-`
-const LargerSizedImage = styled.img`
-  width: 200px;
-  object-fit: contain;
-
-  ${({ theme }) => theme.breakpoints.up("md")} {
-    width: 300px;
-  }
-`
-
-const Images = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-`
-
 const FlexTypography = styled(Typography)`
   display: flex;
 ` as any
@@ -115,11 +92,11 @@ const DialogContentCategoryList = styled.div`
 const DialogContentTextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  & :nth-child(2) {
-    &:before {
-      content: "Description: ";
-    }
-  }
+`
+
+const DialogPrice = styled.div`
+  margin-left: auto;
+  color: #1976d2;
 `
 
 const FullWidthTypography: any = styled(Typography)`
@@ -158,32 +135,27 @@ export function Good({ good }: { good: GoodType }) {
             {good.category.map(value => (
               <Chip label={t(value)} key={value} />
             ))}
+            <DialogPrice>${price}</DialogPrice>
           </DialogContentCategoryList>
           <DialogContentText component="div">
             <DialogContentTextRoot>
               <DialogContentTextContainer>
-                <DialogParagraph>Price: ${price}</DialogParagraph>
                 {good.longDescription?.map(text => <DialogParagraph key={text}>{text}</DialogParagraph>) ?? (
                   <DialogParagraph>{description}</DialogParagraph>
                 )}
               </DialogContentTextContainer>
-              <Images>
-                {good.imageSrc.map(src => (
-                  <LargerSizedImage src={src} alt={title} key={src} />
-                ))}
-              </Images>
             </DialogContentTextRoot>
           </DialogContentText>
           <TextField
             autoFocus
-            label={t("The number of the good")}
-            inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+            label={t("Count")}
+            type="number"
             margin="normal"
             value={dialogValue}
             onChange={ev => {
               if (ev.target.value) {
                 const num = parseInt(ev.target.value, 10)
-                if (!Number.isNaN(num)) setDialogValue(num)
+                if (!Number.isNaN(num) && num > 0) setDialogValue(num)
               } else {
                 setDialogValue(0)
               }
@@ -226,14 +198,13 @@ export function Good({ good }: { good: GoodType }) {
             </IconButton>
           </CardButtonContainer>
         </CardSecondaryContainer>
-        <SizedImage src={imageSrc[0]} alt={title} />
       </CardContainer>
     </>
   )
 }
 
 export function Goods() {
-  const {data: goods} = useGoods()
+  const { data: goods } = useGoods()
   return (
     <>
       <GoodContainer>
