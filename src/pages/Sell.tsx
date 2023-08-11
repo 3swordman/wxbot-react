@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from "@mui/material"
 import { t } from "i18next"
 import styled from "styled-components"
-import { checkout, sellGoods } from "../network"
+import { checkout, sellGoods, useThingsSold } from "../network"
 import currentGoods, { clearGoods } from "../state/current-goods"
 import { type Dispatch, type SetStateAction, useState, useLayoutEffect } from "react"
 import { useTranslation } from "react-i18next"
@@ -27,6 +27,8 @@ export default function SellDialog({ open, setOpen }: { open: boolean; setOpen: 
   const queryClient = useQueryClient()
   const loginToken = useAppSelector(state => state.auth.value?.token)
   const navigate = useNavigate()
+  const { data } = useThingsSold(loginToken!)
+  console.log(data)
   useLayoutEffect(() => {
     navigate("/")
   }, [loginToken])

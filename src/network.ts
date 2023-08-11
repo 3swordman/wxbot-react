@@ -98,3 +98,11 @@ export async function sellGoods(name: string, description: string, price: number
     loginToken
   })
 }
+
+export function useThingsSold(loginToken: string) {
+  return useQuery({
+    queryKey: ["get-things-sold", loginToken],
+    queryFn: () =>
+      postRequest<{ data: { goods: Array<{}>; goodsBought: Array<{}> } | null }>("/get-things-sold", { loginToken })
+  })
+}

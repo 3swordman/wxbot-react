@@ -207,7 +207,7 @@ export default function CheckoutList() {
         <RightButton
           variant="contained"
           onClick={() => setDialogOpen(true)}
-          disabled={score == null || totalPrice >= score! || totalPrice == 0}
+          disabled={score == null || totalPrice >= score! - 100 || totalPrice == 0}
         >
           {t("checkout now")}
           {score == null && t(" (you must login first)")}
