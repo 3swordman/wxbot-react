@@ -108,8 +108,12 @@ const FullWidthTypography: any = styled(Typography)`
   }
 `
 
+const DialogTitleRow = styled(DialogTitle)`
+  display: flex;
+`
+
 export function Good({ good }: { good: GoodType }) {
-  const { title, description, imageSrc, price } = good
+  const { name, description, price } = good
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogValue, setDialogValue] = useState(1)
   const dispatch = useAppDispatch()
@@ -127,22 +131,24 @@ export function Good({ good }: { good: GoodType }) {
   return (
     <>
       <Dialog open={dialogOpen} fullScreen={smallDevice}>
-        <DialogTitle>
-          {title} {t("information")}
-        </DialogTitle>
+        <DialogTitleRow>
+          {name}
+          <DialogPrice>${price}</DialogPrice>
+        </DialogTitleRow>
         <DialogContent>
-          <DialogContentCategoryList>
+          {/* <DialogContentCategoryList>
             {good.category.map(value => (
               <Chip label={t(value)} key={value} />
             ))}
-            <DialogPrice>${price}</DialogPrice>
-          </DialogContentCategoryList>
+            
+          </DialogContentCategoryList> */}
           <DialogContentText component="div">
             <DialogContentTextRoot>
               <DialogContentTextContainer>
-                {good.longDescription?.map(text => <DialogParagraph key={text}>{text}</DialogParagraph>) ?? (
+                {/* {good.longDescription?.map(text => <DialogParagraph key={text}>{text}</DialogParagraph>) ?? (
                   <DialogParagraph>{description}</DialogParagraph>
-                )}
+                )} */}
+                <DialogParagraph>{description}</DialogParagraph>
               </DialogContentTextContainer>
             </DialogContentTextRoot>
           </DialogContentText>
@@ -179,7 +185,7 @@ export function Good({ good }: { good: GoodType }) {
       <CardContainer>
         <CardSecondaryContainer>
           <FlexTypography variant="h5" component="div">
-            {title}
+            {name}
             <RightTypography variant="subtitle1">${price}</RightTypography>
           </FlexTypography>
           <FullWidthTypography variant="subtitle1" color="text.secondary" component="div">
@@ -209,7 +215,7 @@ export function Goods() {
     <>
       <GoodContainer>
         {goods!.map(good => (
-          <Good good={good} key={good.title + good.id}></Good>
+          <Good good={good} key={good.name + good.id}></Good>
         ))}
       </GoodContainer>
     </>

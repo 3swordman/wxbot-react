@@ -79,3 +79,22 @@ export async function getScore(username: string): Promise<number> {
     ).json()
   ).score
 }
+
+export function useScore(username: string | undefined) {
+  const { data } = useQuery({
+    queryKey: ["get-score", username],
+    queryFn: () => (username ? getScore(username) : null)
+  })
+  return username ? data ?? null : null
+}
+
+export async function sellGoods(name: string, description: string, price: number, loginToken: string) {
+  return postRequest<{
+    success: boolean
+  }>("/sell-goods", {
+    name,
+    description,
+    price,
+    loginToken
+  })
+}

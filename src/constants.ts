@@ -1,11 +1,11 @@
 export interface Good {
-  title: string
+  name: string
   description: string
-  longDescription?: string[]
-  imageSrc: string[]
+  // longDescription?: string[]
+  // imageSrc: string[]
   price: number
   id: number
-  category: string[]
+  // category: string[]
 }
 
 export const API_URL = "https://api.score-store.siliconbio.org.cn"

@@ -21,7 +21,7 @@ import {
 import { clearGoods, setGoods } from "../state/current-goods"
 import { useAppSelector, useAppDispatch } from "../store"
 import { Good } from "../constants"
-import { getScore, checkout } from "../network"
+import { checkout, useScore } from "../network"
 
 const CheckoutListRoot = styled(List)`
   display: flex;
@@ -70,7 +70,7 @@ function CheckoutItem({ good, index, count }: { good: Good; index: number; count
       {!!index && <Divider component="li" />}
       <ListItem>
         <ListItemText
-          primary={good.title}
+          primary={good.name}
           secondary={`${t("unit price")}: $${good.price}, ${t("total price")}: $${good.price * count}`}
         ></ListItemText>
         <TextField
@@ -79,11 +79,12 @@ function CheckoutItem({ good, index, count }: { good: Good; index: number; count
           InputLabelProps={{
             shrink: true
           }}
+          autoFocus
           value={count}
           onChange={ev => {
             if (ev.target.value) {
               const num = parseInt(ev.target.value, 10)
-              if (!Number.isNaN(num))
+              if (!Number.isNaN(num) && num > 0)
                 dispatch(
                   setGoods({
                     good,
@@ -126,23 +127,11 @@ export default function CheckoutList() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const username = useAppSelector(state => state.auth.value?.username)
   const loginToken = useAppSelector(state => state.auth.value?.token!)
-  const [score, setScore] = useState<number | null>(null)
+  const score = useScore(username)
   const [checkoutSuccess, setCheckoutSuccess] = useState(false)
   const [checkoutError, setCheckoutError] = useState(false)
   const [reason, setReason] = useState("")
   const { t } = useTranslation()
-  useLayoutEffect(
-    function () {
-      ;(async function () {
-        if (username == null || loginToken == null) {
-          setScore(null)
-          return
-        }
-        setScore(await getScore(username))
-      })()
-    },
-    [username]
-  )
   return (
     <>
       <Snackbar
@@ -204,7 +193,7 @@ export default function CheckoutList() {
       </Dialog>
       <CheckoutListRoot>
         {currentGoods.map(([good, count], index) => (
-          <CheckoutItem key={good.title + good.id + count + index} good={good} index={index} count={count} />
+          <CheckoutItem key={good.name + good.id + count + index} good={good} index={index} count={count} />
         ))}
       </CheckoutListRoot>
       <DetailRoot>
