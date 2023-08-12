@@ -1,4 +1,30 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TextField } from "@mui/material"
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
+} from "@mui/material"
+import {
+  DataGrid,
+  GridColDef,
+  GridRowModes,
+  GridRowModesModel,
+  GridRowsProp,
+  GridToolbarContainer,
+  GridValueGetterParams
+} from "@mui/x-data-grid"
+import { Add as AddIcon, Create as CreateIcon } from "@mui/icons-material"
+
 import { t } from "i18next"
 import styled from "styled-components"
 import { checkout, sellGoods, useThingsSold } from "../network"
@@ -19,7 +45,7 @@ const Inputs = styled.div`
   gap: 0.5em;
 `
 
-export default function SellDialog({ open, setOpen }: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) {
+function SellDialog({ open, setOpen }: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) {
   const { t } = useTranslation()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -27,10 +53,8 @@ export default function SellDialog({ open, setOpen }: { open: boolean; setOpen: 
   const queryClient = useQueryClient()
   const loginToken = useAppSelector(state => state.auth.value?.token)
   const navigate = useNavigate()
-  const { data } = useThingsSold(loginToken!)
-  console.log(data)
   useLayoutEffect(() => {
-    navigate("/")
+    if (!loginToken) navigate("/")
   }, [loginToken])
   return (
     <Dialog open={open}>
@@ -73,5 +97,90 @@ export default function SellDialog({ open, setOpen }: { open: boolean; setOpen: 
         </Button>
       </DialogActions>
     </Dialog>
+  )
+}
+
+const Root = styled.div`
+  display: flex;
+  padding: 1em;
+`
+const Container = styled.div`
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+`
+
+const CreateButton = styled(Button)`
+  display: flex;
+  flex-direction: row;
+  gap: 0.3em;
+`
+const Title = styled.div`
+  font-size: 1.75em;
+`
+
+const columns: GridColDef[] = [
+  { field: "id", headerName: "ID", width: 70, type: "number" },
+  { field: "name", headerName: "Name", width: 130 },
+  { field: "description", headerName: "Description", width: 200, sortable: false }
+]
+
+function OpenDialogButton({ setDialogOpen }: { setDialogOpen: Dispatch<SetStateAction<boolean>> }) {
+  return (
+    <GridToolbarContainer>
+      <CreateButton
+        color="primary"
+        type="button"
+        onClick={() => {
+          setDialogOpen(true)
+        }}
+      >
+        <CreateIcon />
+        <div>Create</div>
+      </CreateButton>
+    </GridToolbarContainer>
+  )
+}
+
+export default function Sell() {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const loginToken = useAppSelector(state => state.auth.value?.token)
+  const { data } = useThingsSold(loginToken!)
+
+  return (
+    <Root>
+      <SellDialog open={dialogOpen} setOpen={setDialogOpen} />
+      <Container>
+        {!!data && !!data.data && (
+          <>
+            <Title>Goods</Title>
+            <DataGrid
+              rows={data.data.goods}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 }
+                }
+              }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+              autoHeight
+              sx={{
+                overflowX: "auto"
+              }}
+              slots={{
+                toolbar: OpenDialogButton
+              }}
+              slotProps={{
+                toolbar: {
+                  setDialogOpen
+                }
+              }}
+            />
+          </>
+        )}
+      </Container>
+    </Root>
   )
 }

@@ -103,6 +103,6 @@ export function useThingsSold(loginToken: string) {
   return useQuery({
     queryKey: ["get-things-sold", loginToken],
     queryFn: () =>
-      postRequest<{ data: { goods: Array<{}>; goodsBought: Array<{}> } | null }>("/get-things-sold", { loginToken })
+      postRequest<{ data: { goods: Array<Good>; goodsBought: Array<{}> } | null }>("/get-things-sold", { loginToken })
   })
 }

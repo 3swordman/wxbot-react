@@ -22,7 +22,6 @@ export default function NavbarContainer() {
   const dispatch = useAppDispatch()
   const authData = useAppSelector(state => state.auth.value)
   const logged = authData != undefined && authData.token != undefined
-  const [sellDialogOpen, setSellDialogOpen] = useState(false)
   const { t } = useTranslation()
   return (
     <>
@@ -47,7 +46,7 @@ export default function NavbarContainer() {
           </WhiteButton>
           <WhiteButton
             onClick={() => {
-              setSellDialogOpen(true)
+              navigate("/sell")
             }}
           >
             {t("Sell")}
@@ -72,7 +71,6 @@ export default function NavbarContainer() {
           )}
         </Toolbar>
       </AppBar>
-      <SellDialog open={sellDialogOpen} setOpen={setSellDialogOpen} />
       <Outlet />
     </>
   )

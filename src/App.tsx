@@ -17,6 +17,7 @@ const Checkout = lazy(() => import("./pages/Checkout"))
 const Login = lazy(() => import("./pages/Login"))
 const Signup = lazy(() => import("./pages/Signup"))
 const Verify = lazy(() => import("./pages/Verify"))
+const Sell = lazy(() => import("./pages/Sell"))
 
 import { setUsernameToken } from "./state/auth"
 import { useAppDispatch, restoreData } from "./store"
@@ -53,6 +54,7 @@ const routerObject = createBrowserRouter(
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="/sell" element={<Sell />} />
       </Route>
     </>
   )
