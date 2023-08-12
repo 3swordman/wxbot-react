@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense, useState } from "react"
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom"
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider, redirect } from "react-router-dom"
 import styled from "styled-components"
 
 import { Backdrop, CircularProgress } from "@mui/material"
@@ -20,7 +20,8 @@ const Verify = lazy(() => import("./pages/Verify"))
 const Sell = lazy(() => import("./pages/Sell"))
 
 import { setUsernameToken } from "./state/auth"
-import { useAppDispatch, restoreData } from "./store"
+import store, { useAppDispatch, restoreData } from "./store"
+import localforage from "localforage"
 
 const LoadingBackdrop = styled(Backdrop)`
   color: white;

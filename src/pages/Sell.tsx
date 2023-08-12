@@ -111,11 +111,6 @@ const Container = styled.div`
   gap: 1em;
 `
 
-const CreateButton = styled(Button)`
-  display: flex;
-  flex-direction: row;
-  gap: 0.3em;
-`
 const Title = styled.div`
   font-size: 1.75em;
 `
@@ -129,16 +124,16 @@ const columns: GridColDef[] = [
 function OpenDialogButton({ setDialogOpen }: { setDialogOpen: Dispatch<SetStateAction<boolean>> }) {
   return (
     <GridToolbarContainer>
-      <CreateButton
+      <Button
         color="primary"
         type="button"
         onClick={() => {
           setDialogOpen(true)
         }}
+        startIcon={<CreateIcon />}
       >
-        <CreateIcon />
         <div>Create</div>
-      </CreateButton>
+      </Button>
     </GridToolbarContainer>
   )
 }
@@ -152,7 +147,7 @@ export default function Sell() {
     <Root>
       <SellDialog open={dialogOpen} setOpen={setDialogOpen} />
       <Container>
-        {!!data && !!data.data && (
+        {!!loginToken && !!data && !!data.data && (
           <>
             <Title>Goods</Title>
             <DataGrid

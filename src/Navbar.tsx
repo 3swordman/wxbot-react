@@ -44,22 +44,24 @@ export default function NavbarContainer() {
           >
             {t("checkout")}
           </WhiteButton>
-          <WhiteButton
-            onClick={() => {
-              navigate("/sell")
-            }}
-          >
-            {t("Sell")}
-          </WhiteButton>
           {logged ? (
-            <WhiteButton
-              onClick={() => {
-                dispatch(logout())
-                clearData()
-              }}
-            >
-              {t("logout")}
-            </WhiteButton>
+            <>
+              <WhiteButton
+                onClick={() => {
+                  navigate("/sell")
+                }}
+              >
+                {t("Sell")}
+              </WhiteButton>
+              <WhiteButton
+                onClick={() => {
+                  dispatch(logout())
+                  clearData()
+                }}
+              >
+                {t("logout")}
+              </WhiteButton>
+            </>
           ) : (
             <WhiteButton
               onClick={() => {
